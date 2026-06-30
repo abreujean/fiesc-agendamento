@@ -27,6 +27,7 @@
         </div>
     @endif
 
+    <x-alerts.toast />
     @include('partials.modal')
 
 </body>

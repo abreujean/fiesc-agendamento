@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
-<div x-data="createAvailabilityForm('{{ $user_id ?? '' }}', '{{ $availability?->public_id ?? '' }}')">
+<div x-data="createAvailabilityForm('{{ $availability?->public_id ?? '' }}')">
     <div class="mb-6">
         <h2 class="text-2xl font-bold text-primary mb-1" x-text="isEdit ? 'Editar Disponibilidade' : 'Nova Disponibilidade'"></h2>
         <p class="text-text-muted text-sm mb-4" x-text="isEdit ? 'Atualize a janela de horário' : 'Defina uma nova janela de horário para o atendente'"></p>
@@ -21,7 +21,7 @@
                         :class="errors.user_id ? 'border-secondary ring-2 ring-secondary/20' : ''">
                     <option value="">Selecione o atendente...</option>
                     <template x-for="user in attendants" :key="user.public_id">
-                        <option :value="user.id" x-text="user.name"></option>
+                        <option :value="user.public_id" x-text="user.name"></option>
                     </template>
                 </select>
                 <p x-show="errors.user_id" class="text-secondary text-xs mt-1" x-text="errors.user_id"></p>

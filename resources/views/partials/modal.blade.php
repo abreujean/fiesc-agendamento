@@ -32,18 +32,6 @@
             </div>
         </div>
     </div>
-
-    <div class="fixed top-4 right-4 z-[60] flex flex-col gap-2 items-end pointer-events-none">
-        <template x-for="(alert, index) in alerts" :key="index">
-            <div class="pointer-events-auto rounded-[10px] shadow-lg px-4 py-3 text-sm max-w-sm border"
-                 :class="alert.type === 'success' ? 'bg-primary/5 border-primary/20 text-primary' : 'bg-secondary/5 border-secondary/20 text-secondary'"
-                 x-show="alert.visible"
-                 x-transition.opacity.duration.300ms
-                 x-init="setTimeout(() => { alert.visible = false; setTimeout(() => alerts.splice(index, 1), 300); }, 4000)">
-                <span x-text="alert.message"></span>
-            </div>
-        </template>
-    </div>
 </div>
 
 <script>
@@ -54,7 +42,6 @@ function modalAndAlerts() {
         modalBody: '',
         confirmAction: null,
         confirmLoading: false,
-        alerts: [],
         closeModal() {
             this.showModal = false;
             this.confirmAction = null;
@@ -78,11 +65,5 @@ window.closeModal = function() {
     const el = document.querySelector('[x-data="modalAndAlerts()"]');
     if (!el) return;
     Alpine.$data(el).closeModal();
-};
-
-window.showAlert = function(message, type = 'error') {
-    const el = document.querySelector('[x-data="modalAndAlerts()"]');
-    if (!el) return;
-    Alpine.$data(el).alerts.push({ message, type, visible: true });
 };
 </script>

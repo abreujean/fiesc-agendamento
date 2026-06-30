@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\Appointment\StoreAppointmentRequest;
 use App\Models\Appointment;
 use App\Services\AppointmentService;
+use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
@@ -22,12 +23,14 @@ class AppointmentController extends Controller
     public function availableSlots(Request $request): JsonResponse
     {
         $request->validate([
-            'attendant_id' => ['required', 'exists:users,id'],
+            'attendant_id' => ['required', 'exists:users,public_id'],
             'date' => ['required', 'date'],
         ]);
 
+        $attendantId = User::where('public_id', $request->attendant_id)->value('id');
+
         return $this->appointmentService->availableSlots(
-            (int) $request->attendant_id,
+            (int) $attendantId,
             $request->date
         );
     }

@@ -17,6 +17,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::put('/users/{user}', [UserController::class, 'update']);
 
     Route::get('/availabilities', [AvailabilityController::class, 'index']);
+    Route::get('/availabilities/{availability}', [AvailabilityController::class, 'show']);
 
     Route::get('/appointments', [AppointmentController::class, 'index']);
     Route::get('/appointments/available-slots', [AppointmentController::class, 'availableSlots']);

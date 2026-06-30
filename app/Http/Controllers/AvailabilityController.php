@@ -19,6 +19,11 @@ class AvailabilityController extends Controller
         return $this->availabilityService->index();
     }
 
+    public function show(Availability $availability): JsonResponse
+    {
+        return $this->availabilityService->show($availability);
+    }
+
     public function store(StoreAvailabilityRequest $request): JsonResponse
     {
         return $this->availabilityService->store($request);

@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Http\Requests\Appointment\StoreAppointmentRequest;
 use App\Models\Appointment;
 use App\Models\Availability;
+use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 
@@ -30,7 +31,8 @@ class AppointmentService
         $busySlots = Appointment::scheduled()
             ->byDate($date)
             ->byAttendant($attendantId)
-            ->pluck('start_time', 'start_time')
+            ->get()
+            ->mapWithKeys(fn ($a) => [$a->start_time->format('H:i') => true])
             ->toArray();
 
         $slots = [];
@@ -42,36 +44,53 @@ class AppointmentService
 
             while ($start->copy()->addMinutes($interval) <= $end) {
                 $slot = $start->format('H:i');
+                $isBusy = isset($busySlots[$slot]);
 
-                if (!isset($busySlots[$slot])) {
-                    $slots[] = [
-                        'start_time' => $slot,
-                        'end_time' => $start->copy()->addMinutes($interval)->format('H:i'),
-                    ];
-                }
+                $slots[] = [
+                    'start_time' => $slot,
+                    'end_time' => $start->copy()->addMinutes($interval)->format('H:i'),
+                    'busy' => $isBusy,
+                ];
 
                 $start->addMinutes($interval);
             }
         }
 
+        $appointments = Appointment::whereDate('date', $date)
+            ->where('attendant_id', $attendantId)
+            ->with('attendant')
+            ->get()
+            ->map(fn ($a) => [
+                'public_id' => $a->public_id,
+                'client_name' => $a->client_name,
+                'client_email' => $a->client_email,
+                'start_time' => $a->start_time->format('H:i'),
+                'end_time' => $a->end_time->format('H:i'),
+                'status' => $a->status->value,
+                'attendant' => $a->attendant?->name ?? '-',
+            ])->values();
+
         return response()->json([
             'attendant_id' => $attendantId,
             'date' => $date,
-            'available_slots' => $slots,
+            'slots' => $slots,
+            'appointments' => $appointments,
         ], 200);
     }
 
     public function store(StoreAppointmentRequest $request): JsonResponse
     {
+        $attendantId = User::where('public_id', $request->attendant_id)->value('id');
+
         $this->validateAvailability(
-            $request->attendant_id,
+            $attendantId,
             $request->date,
             $request->start_time,
             $request->end_time
         );
 
         $appointment = Appointment::create([
-            'attendant_id' => $request->attendant_id,
+            'attendant_id' => $attendantId,
             'client_name' => $request->client_name,
             'client_email' => $request->client_email,
             'date' => $request->date,
