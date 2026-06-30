@@ -11,7 +11,7 @@
         }
     </script>
 </head>
-<body class="bg-gray-100 text-gray-800 min-h-screen">
+<body class="bg-bg-main text-text-main min-h-screen">
 
     @if(request()->is('login'))
         @yield('content')

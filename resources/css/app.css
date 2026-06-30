@@ -6,6 +6,19 @@
 @theme {
     --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
         'Segoe UI Symbol', 'Noto Color Emoji';
+
+    --color-primary: #2F1B41;
+    --color-primary-light: #3D2758;
+    --color-secondary: #C62C60;
+    --color-secondary-light: #D94678;
+    --color-accent: #FA8617;
+    --color-warning: #F9C823;
+    --color-bg-main: #F8F9FB;
+    --color-text-main: #222222;
+    --color-text-muted: #666666;
+    --color-border-main: #E5E7EB;
+
+    --default-transition-duration: 200ms;
 }
 
 [x-cloak] {

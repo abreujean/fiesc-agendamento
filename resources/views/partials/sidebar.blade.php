@@ -1,28 +1,31 @@
-<aside class="w-64 bg-white border-r border-gray-200 flex flex-col shadow-sm">
-    <div class="p-4 border-b border-gray-200">
-        <h2 class="text-sm font-bold text-gray-600 uppercase tracking-wide">Menu</h2>
+<aside class="w-64 bg-primary flex flex-col">
+    <div class="p-5 border-b border-white/10">
+        <h2 class="text-xs font-bold text-white/50 uppercase tracking-widest">Menu</h2>
     </div>
-    <nav class="flex-1 p-2">
-        <a href="/" class="flex items-center gap-3 px-3 py-2 rounded-md text-sm text-gray-700 hover:bg-gray-100" :class="$data.isActive('/')">
-            <svg class="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-2l-2-2m-2 2l-10-10-10 2m2 2l10 10"/></svg>
+    <nav class="flex-1 p-3 space-y-1">
+        <x-nav.sidebar-link href="/">
+            <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="m2.25 12 8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25"/></svg>
             Dashboard
-        </a>
-        <a href="/users" class="flex items-center gap-3 px-3 py-2 rounded-md text-sm text-gray-700 hover:bg-gray-100" :class="$data.isActive('/users')">
-            <svg class="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 8 4 4 0 010-8zM12 14a9 9 0 100-18 9 9 0 000 18z"/></svg>
+        </x-nav.sidebar-link>
+
+        <x-nav.sidebar-link href="/users">
+            <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19.128a9.38 9.38 0 0 0 2.625.372 9.337 9.337 0 0 0 4.121-.952 4.125 4.125 0 0 0-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 0 1 8.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0 1 11.964-3.07M12 6.375a3.375 3.375 0 1 1-6.75 0 3.375 3.375 0 0 1 6.75 0Zm8.25 2.25a2.625 2.625 0 1 1-5.25 0 2.625 2.625 0 0 1 5.25 0Z"/></svg>
             Usuários
-        </a>
+        </x-nav.sidebar-link>
+
         <template x-if="window.getUser()?.profile === 'administrador'">
-            <a href="/availabilities" class="flex items-center gap-3 px-3 py-2 rounded-md text-sm text-gray-700 hover:bg-gray-100" :class="$data.isActive('/availabilities')">
-                <svg class="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4l10-5 2 15H17l-2 5m-11-3v5h4"/></svg>
+            <x-nav.sidebar-link href="/availabilities">
+                <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/></svg>
                 Disponibilidade
-            </a>
+            </x-nav.sidebar-link>
         </template>
-        <a href="/appointments" class="flex items-center gap-3 px-3 py-2 rounded-md text-sm text-gray-700 hover:bg-gray-100" :class="$data.isActive('/appointments')">
-            <svg class="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4l10-5 2 15H17l-2 5m-11-3v5h4"/></svg>
+
+        <x-nav.sidebar-link href="/appointments">
+            <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5m-9-6h.008v.008H12v-.008ZM12 15h.008v.008H12V15Zm0 2.25h.008v.008H12v-.008ZM9.75 15h.008v.008H9.75V15Zm0 2.25h.008v.008H9.75v-.008ZM7.5 15h.008v.008H7.5V15Zm0 2.25h.008v.008H7.5v-.008Zm6.75-4.5h.008v.008h-.008v-.008Zm0 2.25h.008v.008h-.008V15Zm0 2.25h.008v.008h-.008v-.008Zm2.25-4.5h.008v.008H16.5v-.008Zm0 2.25h.008v.008H16.5V15Z"/></svg>
             Agendamentos
-        </a>
+        </x-nav.sidebar-link>
     </nav>
-    <div class="p-3 border-t border-gray-200 text-xs text-gray-400">
+    <div class="p-4 border-t border-white/10 text-xs text-white/30">
         <span x-text="window.getUser()?.profile === 'administrador' ? 'Administrador' : 'Atendente'"></span>
     </div>
 </aside>

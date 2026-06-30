@@ -14,9 +14,17 @@ class AuthService
     {
         $credentials = $request->only('email', 'password');
 
+        $user = User::where('email', $credentials['email'])->first();
+
+        if (!$user) {
+            throw ValidationException::withMessages([
+                'email' => ['E-mail inválido.'],
+            ]);
+        }
+
         if (!Auth::attempt($credentials)) {
             throw ValidationException::withMessages([
-                'email' => ['Credenciais inválidas.'],
+                'password' => ['Senha inválida.'],
             ]);
         }
 
