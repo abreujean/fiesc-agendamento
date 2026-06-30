@@ -14,6 +14,7 @@ Route::middleware(['web', 'auth:sanctum'])->group(function () {
     Route::get('/availabilities/{availability}', [AvailabilityController::class, 'show']);
 
     Route::get('/appointments', [AppointmentController::class, 'index']);
+    Route::get('/my-appointments', [AppointmentController::class, 'myAppointments']);
     Route::get('/appointments/available-slots', [AppointmentController::class, 'availableSlots']);
     Route::post('/appointments', [AppointmentController::class, 'store']);
     Route::put('/appointments/{appointment}/cancel', [AppointmentController::class, 'cancel']);

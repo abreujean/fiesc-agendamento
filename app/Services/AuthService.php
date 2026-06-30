@@ -48,10 +48,4 @@ class AuthService
         ], 200);
     }
 
-    public function me(): JsonResponse
-    {
-        return response()->json([
-            'user' => Auth::user(),
-        ], 200);
-    }
 }

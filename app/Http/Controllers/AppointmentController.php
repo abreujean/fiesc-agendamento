@@ -44,4 +44,9 @@ class AppointmentController extends Controller
     {
         return $this->appointmentService->cancel($appointment);
     }
+
+    public function myAppointments(): JsonResponse
+    {
+        return $this->appointmentService->myAppointments(auth()->id());
+    }
 }

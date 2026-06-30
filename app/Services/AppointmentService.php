@@ -114,6 +114,26 @@ class AppointmentService
         ], 200);
     }
 
+    public function myAppointments(int $userId): JsonResponse
+    {
+        $appointments = Appointment::with('attendant')
+            ->where('attendant_id', $userId)
+            ->orderBy('date', 'desc')
+            ->orderBy('start_time', 'desc')
+            ->get()
+            ->map(fn ($a) => [
+                'public_id' => $a->public_id,
+                'client_name' => $a->client_name,
+                'client_email' => $a->client_email,
+                'date' => $a->date->format('Y-m-d'),
+                'start_time' => $a->start_time->format('H:i'),
+                'end_time' => $a->end_time->format('H:i'),
+                'status' => $a->status->value,
+            ])->values();
+
+        return response()->json($appointments, 200);
+    }
+
     private function validateAvailability(int $attendantId, string $date, string $startTime, string $endTime): void
     {
         $carbonDate = Carbon::parse($date);

@@ -1,1 +1,0 @@
-<x-alerts.toast />

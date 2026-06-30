@@ -2,9 +2,12 @@
 
 @section('content')
 <div x-data="usersData()">
-    <x-headers.page-header title="Usuários" subtitle="Gerenciamento de usuários do sistema"
-        actionLabel="Novo Usuário" actionHref="/users/create"
-        :showAction="true" />
+    @if(auth()->user()?->isAdmin())
+        <x-headers.page-header title="Usuários" subtitle="Gerenciamento de usuários do sistema"
+            actionLabel="Novo Usuário" actionHref="/users/create" />
+    @else
+        <x-headers.page-header title="Usuários" subtitle="Gerenciamento de usuários do sistema" />
+    @endif
 
     <x-tables.data-table
         :headers="[

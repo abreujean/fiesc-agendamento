@@ -11,9 +11,13 @@ class AdminMiddleware
     public function handle(Request $request, Closure $next): Response
     {
         if (!$request->user()?->isAdmin()) {
-            return response()->json([
-                'message' => 'Acesso negado. Apenas administradores podem acessar este recurso.',
-            ], 403);
+            if ($request->expectsJson() || $request->is('api/*')) {
+                return response()->json([
+                    'message' => 'Acesso negado. Apenas administradores podem acessar este recurso.',
+                ], 403);
+            }
+
+            abort(403);
         }
 
         return $next($request);

@@ -2,8 +2,12 @@
 
 @section('content')
 <div x-data="availabilitiesData()">
-    <x-headers.page-header title="Disponibilidade" subtitle="Janelas de horários dos atendentes"
-        actionLabel="Nova Disponibilidade" actionHref="/availabilities/create" />
+    @if(auth()->user()?->isAdmin())
+        <x-headers.page-header title="Disponibilidade" subtitle="Janelas de horários dos atendentes"
+            actionLabel="Nova Disponibilidade" actionHref="/availabilities/create" />
+    @else
+        <x-headers.page-header title="Disponibilidade" subtitle="Janelas de horários dos atendentes" />
+    @endif
 
     <x-tables.data-table
         :headers="[

@@ -10,9 +10,9 @@ import { editUserForm } from './components/editUserForm.js';
 import { availabilitiesData } from './components/availabilitiesData.js';
 import { createAvailabilityForm } from './components/createAvailabilityForm.js';
 import { appointmentsData } from './components/appointmentsData.js';
+import { profileData } from './components/profileData.js';
 
-window.appLayout = appLayout;
-
+Alpine.data('appLayout', appLayout);
 Alpine.data('alertsData', alertsData);
 Alpine.data('loginForm', loginForm);
 Alpine.data('dashboardData', dashboardData);
@@ -22,6 +22,7 @@ Alpine.data('editUserForm', editUserForm);
 Alpine.data('availabilitiesData', availabilitiesData);
 Alpine.data('createAvailabilityForm', createAvailabilityForm);
 Alpine.data('appointmentsData', appointmentsData);
+Alpine.data('profileData', profileData);
 
 window.Alpine = Alpine;
 Alpine.start();
