@@ -6,28 +6,30 @@ export function loginForm() {
 
         form: { email: '', password: '' },
 
-        checkAuth() {
-            if (window.getToken()) {
-                window.location.href = '/';
-            }
-        },
-
         async handleLogin() {
             this.resetErrors();
             this.loading = true;
 
-            const { success, data, status } = await window.api('/login', {
+            await fetch('/sanctum/csrf-cookie', { method: 'GET', credentials: 'same-origin' });
+
+            const response = await fetch('/login', {
                 method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json',
+                },
                 body: JSON.stringify(this.form),
+                credentials: 'same-origin',
             });
+
+            const data = await response.json();
 
             this.loading = false;
 
-            if (success) {
-                window.setToken(data.token);
-                window.setUser(data.user);
-                window.location.href = '/';
-            } else if (status === 422 && data.errors) {
+            if (response.ok) {
+                window.showAlert('Login realizado!', 'success');
+                setTimeout(() => { window.location.href = '/'; }, 1500);
+            } else if (response.status === 422 && data.errors) {
                 this.errors = Object.fromEntries(
                     Object.entries(data.errors).map(([field, messages]) => [field, messages[0]])
                 );

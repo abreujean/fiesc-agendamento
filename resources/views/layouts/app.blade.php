@@ -5,11 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>FIESC - Agendamentos</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
-    <script>
-        if (!localStorage.getItem('auth_token') && !window.location.pathname.includes('/login')) {
-            window.location.href = '/login';
-        }
-    </script>
 </head>
 <body class="bg-bg-main text-text-main min-h-screen">
 

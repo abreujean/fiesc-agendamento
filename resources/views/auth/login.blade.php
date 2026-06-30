@@ -9,7 +9,7 @@
                 <p class="text-text-muted text-sm">Faça login para acessar o sistema</p>
             </div>
 
-            <div x-data="loginForm()" x-init="checkAuth()">
+            <div x-data="loginForm()">
                 <form @submit.prevent="handleLogin()">
                     <div class="mb-4">
                         <x-forms.input name="email" label="E-mail" type="email" placeholder="seu@email.com" />

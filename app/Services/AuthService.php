@@ -28,19 +28,20 @@ class AuthService
             ]);
         }
 
-        $user = Auth::user();
-        $token = $user->createToken('auth-token')->plainTextToken;
+        $request->session()->regenerate();
 
         return response()->json([
             'message' => 'Login realizado com sucesso.',
-            'user' => $user,
-            'token' => $token,
+            'user' => Auth::user(),
         ], 200);
     }
 
     public function logout(): JsonResponse
     {
-        Auth::user()->currentAccessToken()->delete();
+        Auth::guard('web')->logout();
+
+        request()->session()->invalidate();
+        request()->session()->regenerateToken();
 
         return response()->json([
             'message' => 'Logout realizado com sucesso.',

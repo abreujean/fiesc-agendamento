@@ -1,47 +1,25 @@
 const API_BASE = '/api';
 
-function getToken() {
-    return localStorage.getItem('auth_token');
-}
-
-function setToken(token) {
-    localStorage.setItem('auth_token', token);
-}
-
-function removeToken() {
-    localStorage.removeItem('auth_token');
-    localStorage.removeItem('auth_user');
-}
-
-function getUser() {
-    const data = localStorage.getItem('auth_user');
-    return data ? JSON.parse(data) : null;
-}
-
-function setUser(user) {
-    localStorage.setItem('auth_user', JSON.stringify(user));
-}
-
 async function apiFetch(url, options = {}) {
-    const token = getToken();
-
     const headers = {
         'Content-Type': 'application/json',
         'Accept': 'application/json',
         ...options.headers,
     };
 
-    if (token) {
-        headers['Authorization'] = `Bearer ${token}`;
-    }
-
     try {
         const response = await fetch(`${API_BASE}${url}`, {
             ...options,
             headers,
+            credentials: 'same-origin',
         });
 
         const data = await response.json();
+
+        if (response.status === 401) {
+            window.location.href = '/login';
+            return { success: false, data, status: 401 };
+        }
 
         if (!response.ok) {
             window.dispatchEvent(new CustomEvent('api-error', {
@@ -63,15 +41,9 @@ async function apiFetch(url, options = {}) {
 
 function logout() {
     apiFetch('/logout', { method: 'POST' }).finally(() => {
-        removeToken();
         window.location.href = '/login';
     });
 }
 
 window.api = apiFetch;
-window.getToken = getToken;
-window.setToken = setToken;
-window.removeToken = removeToken;
-window.getUser = getUser;
-window.setUser = setUser;
 window.logout = logout;

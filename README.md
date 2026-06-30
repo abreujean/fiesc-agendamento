@@ -1,58 +1,201 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# FIESC Agendamentos
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Sistema de gerenciamento de agendamentos entre clientes e atendentes. Desenvolvido como teste técnico para a vaga Full Stack Pleno na FIESC.
 
-## About Laravel
+## Como Rodar
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+### Pré-requisitos
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+- Docker e Docker Compose
+- Node.js 18+
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
-
-## Learning Laravel
-
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
-
-In addition, [Laracasts](https://laracasts.com) contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
-
-You can also watch bite-sized lessons with real-world projects on [Laravel Learn](https://laravel.com/learn), where you will be guided through building a Laravel application from scratch while learning PHP fundamentals.
-
-## Agentic Development
-
-Laravel's predictable structure and conventions make it ideal for AI coding agents like Claude Code, Cursor, and GitHub Copilot. Install [Laravel Boost](https://laravel.com/docs/ai) to supercharge your AI workflow:
+### Instalação
 
 ```bash
-composer require laravel/boost --dev
+# 1. Subir containers (MySQL + PHP)
+./vendor/bin/sail up -d
 
-php artisan boost:install
+# 2. Instalar dependências PHP
+./vendor/bin/sail composer install
+
+# 3. Instalar dependências Node
+npm install
+
+# 4. Copiar arquivo de ambiente
+cp .env.example .env
+
+# 5. Gerar key do Laravel
+./vendor/bin/sail artisan key:generate
+
+# 6. Rodar migrações e seeders
+./vendor/bin/sail artisan migrate:fresh --seed
+
+# 7. Build dos assets (produção)
+npm run build
+
+# OU usar Vite dev server (desenvolvimento com hot reload)
+npm run dev
 ```
 
-Boost provides your agent 15+ tools and skills that help agents build Laravel applications while following best practices.
+### Acessar
 
-## Contributing
+| Serviço | URL |
+|---|---|
+| Aplicação | http://localhost:8087 |
+| Vite Dev Server | http://localhost:5173 |
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+## Credenciais
 
-## Code of Conduct
+| Perfil | E-mail | Senha |
+|---|---|---|
+| Administrador | admin@fiesc.com | 12345678 |
+| Atendente | joao@fiesc.com | 12345678 |
+| Atendente | maria@fiesc.com | 12345678 |
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+## Dados do Seeder
 
-## Security Vulnerabilities
+### Usuários (3)
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+| Nome | Perfil |
+|---|---|
+| Administrador | Administrador |
+| Atendente João | Atendente |
+| Atendente Maria | Atendente |
 
-## License
+### Disponibilidades (4)
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+| Atendente | Dia | Horário |
+|---|---|---|
+| Atendente João | Segunda-feira | 08:00 - 12:00 |
+| Atendente João | Segunda-feira | 14:00 - 18:00 |
+| Atendente João | Terça-feira | 08:00 - 12:00 |
+| Atendente Maria | Segunda-feira | 09:00 - 17:00 |
+
+## Funcionalidades
+
+### Autenticação
+- Login via Sanctum SPA Cookie (session-based, sem token manual)
+- Middleware `auth` protege todas as rotas (server-side redirect para `/login`)
+- Logout invalida sessão e cookie CSRF
+
+### Dashboard
+- Cards com totais: agendamentos do dia, total de usuários, total de atendentes
+- Dados carregados via API
+
+### Usuários (CRUD)
+- **Administrador**: criar, listar, editar, excluir
+- **Atendente**: listar, editar (próprios dados)
+- Validação de perfil: atendente não pode alterar seu perfil para administrador
+- Identificador público: `public_id` (UUID) em vez de auto-increment
+
+### Disponibilidade
+- **Criar**: selecionar atendente, dia da semana, horário de início/fim, status ativo
+- **Editar**: alterar dia da semana, horários, status ativo (atendente não pode ser alterado)
+- **Listar**: tabela com todos os registros
+- **Validação de conflito**: impede criar/editar horários sobrepostos para o mesmo atendente no mesmo dia (ex: João segunda 08:00-12:00 + novo 10:00-13:00 = conflito)
+- Mensagem de erro via toast alert
+
+### Agendamentos
+- **Consultar horários**: selecionar atendente + data → exibe slots de 30 minutos
+- **Slots ocupados**: marcados como "Ocupado" (desabilitados) com ícone visual
+- **Agendar**: preencher nome e e-mail do cliente, confirmar
+- **Agendamentos do dia**: tabela abaixo dos slots com status (Agendado, Cancelado, Concluído)
+- **Validação**: data deve ser hoje ou futura, horário deve estar dentro de disponibilidade ativa
+- **Conflito**: impede agendar em horário já ocupado
+
+### Alertas (Toast)
+- Componente `<x-alerts.toast>` presente em todas as páginas
+- Ícone + mensagem + botão fechar
+- Verde (sucesso) / Vermelho (erro)
+- Animação slide-in, desaparece após 4 segundos
+- Aparece em: login, CRUD de usuários, CRUD de disponibilidades, agendamentos
+
+## Arquitetura
+
+### Stack
+
+| Camada | Tecnologia | Versão |
+|---|---|---|
+| Runtime | PHP via Docker (Laravel Sail) | 8.4 |
+| Framework | Laravel | 13 |
+| Banco | MySQL | 8.4 |
+| CSS | Tailwind CSS | 4 |
+| JS | Alpine.js | 3.15 |
+| Build | Vite | 8 |
+| Auth | Laravel Sanctum (SPA Cookie) | - |
+
+### Por que esta stack?
+
+- **Laravel**: ecossistema completo (ORM, migrations, seeding, Sanctum, middleware, Blade) — ideal para CRUDs com regras de negócio
+- **PHP 8.4**: requisitos da vaga
+- **MySQL via Sail**: ambiente Docker padronizado, sem dependência local
+- **Tailwind CSS 4**: utility-first com `@theme` para paleta customizada, sem configuração extra
+- **Alpine.js**: reatividade sem overhead de frameworks SPA (React/Vue), ideal para Blade templates que precisam de interatividade pontual
+- **Vite**: HMR rápido para desenvolvimento frontend
+- **Sanctum SPA Cookie**: autenticação via session cookie (não expõe token no localStorage), `auth()->user()` funciona no PHP, middleware `auth` protege rotas server-side, cookie `httpOnly` mais seguro contra XSS
+
+### Back-end
+
+```
+app/
+├── Controllers/      # 4 controllers — delegam para Services
+├── Services/         # 4 services — lógica de negócio
+├── Models/           # 3 models (User, Availability, Appointment)
+├── Enums/            # 3 enums (UserProfile, AppointmentStatus, DayOfWeekEnum)
+├── Traits/           # HasUuid (UUID generation + route binding)
+├── Middleware/       # AdminMiddleware (403 para não-admin)
+└── Requests/         # 6 FormRequests (validação + mensagens PT-BR)
+```
+
+**Padrão**: Controller → Service → Model. Controller não contém lógica de negócio. FormRequest valida dados e retorna mensagens em português. Services retornam `JsonResponse` com HTTP codes.
+
+**Rotas API** (`routes/api.php`): protegidas por `web` + `auth:sanctum` (session cookie). Rotas de criação/exclusão têm middleware `admin` adicional.
+
+**Rotas Web** (`routes/web.php`): servem views Blade. Rotas protegidas por `web` + `auth` middleware (server-side, redireciona para login).
+
+### Front-end
+
+```
+resources/
+├── js/
+│   ├── app.js              # Boot: imports + Alpine.data() + Alpine.start()
+│   ├── api.js              # Fetch wrapper (credentials: same-origin)
+│   ├── mixins.js            # useFormData, useDataLoader, useDeleteConfirmation
+│   └── components/         # 1 arquivo por funcionalidade
+│       ├── loginForm.js
+│       ├── dashboardData.js
+│       ├── usersData.js
+│       ├── createUserForm.js
+│       ├── editUserForm.js
+│       ├── availabilitiesData.js
+│       ├── createAvailabilityForm.js
+│       ├── appointmentsData.js
+│       └── alertsData.js
+├── views/
+│   ├── layouts/app.blade.php
+│   ├── partials/           # sidebar, navbar, modal
+│   ├── components/         # Blade components reutilizáveis
+│   │   ├── forms/input     # x-model dinâmico, validação inline
+│   │   ├── buttons/        # submit, cancel
+│   │   ├── tables/         # data-table
+│   │   ├── badges/         # status
+│   │   ├── alerts/         # toast
+│   │   ├── headers/        # page-header, form-header
+│   │   ├── nav/            # sidebar-link
+│   │   ├── cards/          # stat-card
+│   │   └── states/         # list-state
+│   └── [pages]             # auth/, users/, availabilities/, appointments/
+```
+
+**Padrão**: 1 Alpine component (`Alpine.data()`) por view. Mixins reutilizam lógica (form submission, data loading, delete confirmation). Blade components com props dinâmicas (`:model`, `:errorKey`).
+
+**Fluxo de dados**: View Blade → Alpine component (`x-data`) → `apiFetch()` (fetch com cookie) → API Laravel → Service → Model → JSON response → Alpine atualiza DOM.
+
+### Segurança
+
+- **UUID público**: `public_id` em todas as entidades, auto-increment `id` hidden no JSON
+- **Session cookie**: Sanctum SPA Cookie com `httpOnly`, `sameSite=lax`, CSRF protection
+- **Server-side auth**: middleware `auth` nas rotas web, `auth:sanctum` nas rotas API
+- **Admin middleware**: 403 para operações administrativas por atendentes
+- **Validação**: FormRequests com regras e mensagens em português
+- **Conflito de horários**: validação no `AvailabilityService::store()` e `update()`
