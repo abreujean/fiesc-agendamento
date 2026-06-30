@@ -1,11 +1,22 @@
 const API_BASE = '/api';
 
+function getXsrfToken() {
+    const match = document.cookie.match(/XSRF-TOKEN=([^;]+)/);
+    return match ? decodeURIComponent(match[1]) : null;
+}
+
 async function apiFetch(url, options = {}) {
     const headers = {
         'Content-Type': 'application/json',
         'Accept': 'application/json',
         ...options.headers,
     };
+
+    const method = (options.method || 'GET').toUpperCase();
+    if (method !== 'GET' && method !== 'HEAD') {
+        const token = getXsrfToken();
+        if (token) headers['X-XSRF-TOKEN'] = token;
+    }
 
     try {
         const response = await fetch(`${API_BASE}${url}`, {
@@ -47,3 +58,4 @@ function logout() {
 
 window.api = apiFetch;
 window.logout = logout;
+window.getXsrfToken = getXsrfToken;

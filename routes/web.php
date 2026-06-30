@@ -24,7 +24,12 @@ Route::middleware(['web', 'auth'])->group(function () {
     Route::get('/availabilities/{availability}/edit', fn (Availability $availability) => view('availabilities.create', compact('availability')))->name('availabilities.edit')->middleware('admin');
 
     Route::get('/appointments', fn () => view('appointments.index'))->name('appointments.index');
-    Route::get('/meus-agendamentos', fn () => view('profile'))->name('profile');
+    Route::get('/meus-agendamentos', function () {
+        if (auth()->user()?->isAdmin()) {
+            return redirect('/');
+        }
+        return view('profile');
+    })->name('profile');
 });
 
 Route::fallback(fn () => redirect('/'));
