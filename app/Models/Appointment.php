@@ -4,8 +4,6 @@ namespace App\Models;
 
 use App\Enums\AppointmentStatus;
 use App\Traits\HasUuid;
-use Illuminate\Database\Eloquent\Attributes\Hidden;
-use Illuminate\Database\Eloquent\Attributes\Scopes\Scope;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -25,7 +23,10 @@ class Appointment extends Model
         'status',
     ];
 
-    #[Hidden(['id', 'attendant_id'])]
+    protected $hidden = [
+        'id',
+        'attendant_id',
+    ];
 
     protected function casts(): array
     {
@@ -37,26 +38,22 @@ class Appointment extends Model
         ];
     }
 
-    #[Scope]
-    public function scheduled(Builder $query): Builder
+    public function scopeScheduled(Builder $query): Builder
     {
         return $query->where('status', AppointmentStatus::AGENDADO);
     }
 
-    #[Scope]
-    public function cancelled(Builder $query): Builder
+    public function scopeCancelled(Builder $query): Builder
     {
         return $query->where('status', AppointmentStatus::CANCELADO);
     }
 
-    #[Scope]
-    public function byDate(Builder $query, string $date): Builder
+    public function scopeByDate(Builder $query, string $date): Builder
     {
         return $query->where('date', $date);
     }
 
-    #[Scope]
-    public function byAttendant(Builder $query, int|string $attendantId): Builder
+    public function scopeByAttendant(Builder $query, int|string $attendantId): Builder
     {
         return $query->where('attendant_id', $attendantId);
     }

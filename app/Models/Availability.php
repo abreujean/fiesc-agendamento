@@ -4,8 +4,6 @@ namespace App\Models;
 
 use App\Enums\DayOfWeekEnum;
 use App\Traits\HasUuid;
-use Illuminate\Database\Eloquent\Attributes\Hidden;
-use Illuminate\Database\Eloquent\Attributes\Scopes\Scope;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -23,7 +21,10 @@ class Availability extends Model
         'is_active',
     ];
 
-    #[Hidden(['id', 'user_id'])]
+    protected $hidden = [
+        'id',
+        'user_id',
+    ];
 
     protected function casts(): array
     {
@@ -35,14 +36,12 @@ class Availability extends Model
         ];
     }
 
-    #[Scope]
-    public function active(Builder $query): Builder
+    public function scopeActive(Builder $query): Builder
     {
         return $query->where('is_active', true);
     }
 
-    #[Scope]
-    public function byDayOfWeek(Builder $query, int $dayNumber): Builder
+    public function scopeByDayOfWeek(Builder $query, int $dayNumber): Builder
     {
         return $query->where('day_of_week', $dayNumber);
     }

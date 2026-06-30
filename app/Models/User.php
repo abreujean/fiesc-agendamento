@@ -5,16 +5,16 @@ namespace App\Models;
 use App\Enums\UserProfile;
 use App\Traits\HasUuid;
 use Database\Factories\UserFactory;
-use Illuminate\Database\Eloquent\Attributes\Hidden;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable
 {
     /** @use HasFactory<UserFactory> */
-    use HasFactory, HasUuid, Notifiable;
+    use HasApiTokens, HasFactory, HasUuid, Notifiable;
 
     protected $fillable = [
         'name',
@@ -23,7 +23,11 @@ class User extends Authenticatable
         'profile',
     ];
 
-    #[Hidden(['id', 'password', 'remember_token'])]
+    protected $hidden = [
+        'id',
+        'password',
+        'remember_token',
+    ];
 
     protected function casts(): array
     {
