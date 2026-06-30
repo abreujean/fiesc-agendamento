@@ -20,8 +20,6 @@
                     </div>
 
                     <x-buttons.submit label="Entrar" loadingLabel="Entrando..." fullWidth :showSpinner="true" />
-
-                    <p x-show="errors.general" class="text-secondary text-xs mt-3 text-center" x-text="errors.general"></p>
                 </form>
             </div>
         </div>

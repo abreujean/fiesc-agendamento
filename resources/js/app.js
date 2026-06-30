@@ -43,7 +43,8 @@ Alpine.data('loginForm', () => ({
                 Object.entries(data.errors).map(([field, messages]) => [field, messages[0]])
             );
         } else {
-            this.errors = { general: data.message || 'Erro ao fazer login.' };
+            this.errors = {};
+            window.showAlert(data.message || 'Erro ao fazer login.', 'error');
         }
     }
 }));
@@ -226,7 +227,8 @@ Alpine.data('appointmentsData', () => ({
                 Object.entries(data.errors).map(([field, messages]) => [field, messages[0]])
             );
         } else {
-            this.errors = { general: data.message || 'Erro ao criar agendamento.' };
+            this.errors = {};
+            window.showAlert(data.message || 'Erro ao criar agendamento.', 'error');
         }
     }
 }));

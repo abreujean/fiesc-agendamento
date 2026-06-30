@@ -10,7 +10,8 @@ export function useFormSubmission({ url, method = 'POST', successMessage = 'Salv
                     Object.entries(data.errors).map(([field, messages]) => [field, messages[0]])
                 );
             } else {
-                this.errors = { general: data.message || 'Erro ao salvar.' };
+                this.errors = {};
+                window.showAlert(data.message || 'Erro ao salvar.', 'error');
             }
         },
 
@@ -31,7 +32,7 @@ export function useFormSubmission({ url, method = 'POST', successMessage = 'Salv
 
             if (success) {
                 window.showAlert(successMessage, 'success');
-                if (redirectTo) window.location.href = redirectTo;
+                if (redirectTo) setTimeout(() => { window.location.href = redirectTo; }, 1500);
             } else {
                 this.parseErrors(data, status);
             }
@@ -62,11 +63,13 @@ export function useDeleteConfirmation(urlBuilder, successMessage = 'Excluído co
                 'Confirmar Exclusão',
                 `Tem certeza que deseja excluir "${item.name || item.public_id}"? Esta ação não pode ser desfeita.`,
                 async () => {
-                    const { success } = await window.api(urlBuilder(item), { method: 'DELETE' });
+                    const { success, data } = await window.api(urlBuilder(item), { method: 'DELETE' });
                     window.closeModal();
                     if (success) {
                         window.showAlert(successMessage, 'success');
                         if (typeof this.loadData === 'function') await this.loadData();
+                    } else {
+                        window.showAlert(data.message || 'Erro ao excluir.', 'error');
                     }
                 }
             );
